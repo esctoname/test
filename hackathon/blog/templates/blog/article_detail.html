@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ article.title }}</title>
+    <style>
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 2rem auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        h1 {
+            color: #444;
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 1rem;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        p {
+            line-height: 1.5rem;
+        }
+        .reply {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+        .reply-form {
+            margin-top: 1rem;
+        }
+
+        .reply-form textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 0.5rem;
+        }
+        button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .action-links a {
+            background: #f0f0f0;
+            color: #333;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .action-links a:hover {
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.content|linebreaksbr }}</p>
+    <p>By {{ article.author }} at {{ article.created_at }}</p>
+
+    {% if user == article.author %}
+        <a href="{% url 'article_edit' article.pk %}">Edit</a>
+        <a href="{% url 'article_delete' article.pk %}">Delete</a>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <form method="POST" class="reply-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Reply</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Log in</a> to reply.</p>
+    {% endif %}
+
+    <hr>
+
+    <h3>Replies</h3>
+    {% for reply in replies %}
+        <div class="reply">
+            <small>By {{ reply.author }} at {{ reply.created_at }}</small>
+            <p>{{ reply.content|linebreaksbr }}</p>
+        </div>
+    {% empty %}
+        <p>No replies yet. Be the first to reply!</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <form method="POST" class="reply-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Reply</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Log in</a> to reply.</p>
+    {% endif %}
+</div>
+</body>
+</html>

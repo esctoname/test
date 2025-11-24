@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Articles</title>
+    <style>
+        body { font-family: Arial; background: #f5f5f5; color: #333; margin:0; padding:0; }
+        .container { width: 80%; max-width: 800px; margin: 2rem auto; background: #fff; padding:2rem; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+        h1 { color:#444; margin-bottom:1rem;}
+        a { color:#007bff; text-decoration:none; }
+        a:hover { text-decoration:underline;}
+        ul { list-style:none; padding:0;}
+        li { padding:0.5rem 0; border-bottom:1px solid #eee;}
+        button { background:#007bff; color:#fff; border:none; padding:0.5rem 1rem; border-radius:4px; cursor:pointer;}
+        button:hover { background:#0056b3; }
+        .header {
+            background:#333;
+            color:#fff;
+            padding:0.5rem 1rem;
+            margin:-2rem -2rem 1rem -2rem;
+            display:flex;
+            justify-content:flex-end;
+            align-items:center;
+            border-radius:8px 8px 0 0;
+            box-sizing:border-box;
+        }
+        .header button {
+            background:none;
+            border:none;
+            color:#fff;
+            cursor:pointer;
+            text-decoration:underline;
+            font-size:1rem;
+            padding:0;
+            margin-left:1rem;
+        }
+        .header a.login-link {
+            color:#fff;
+            text-decoration:none;
+            font-weight:bold;
+            padding:0.2rem 0.5rem;
+            border-radius:4px;
+            background:#007bff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        {% if user.is_authenticated %}
+            Hello, {{ user.username }}
+            <form action="{% url 'logout' %}" method="post" style="display:inline; margin:0;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}" class="login-link">Login</a>
+        {% endif %}
+    </div>
+    <h1>Articles</h1>
+    {% if user.is_authenticated %}
+        <a href="{% url 'article_create' %}">Create new article</a>
+    {% endif %}
+
+    <ul>
+        {% for article in articles %}
+        <li>
+            <a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a> by {{ article.author }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>
